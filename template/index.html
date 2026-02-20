@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jhoola – Premium Baby Cradles</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #fdf6ee;
+    --blush: #f2c4b0;
+    --sage: #8aab8e;
+    --deep: #3d2c2c;
+    --warm: #c47a5a;
+    --gold: #d4a84b;
+    --soft: #faeade;
+    --white: #fff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--deep);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: rgba(253,246,238,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(196,122,90,0.15);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 60px; height: 70px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--deep); text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .logo span { color: var(--warm); font-style: italic; }
+  nav ul { list-style: none; display: flex; gap: 40px; }
+  nav ul li a {
+    text-decoration: none; color: var(--deep); font-size: 0.9rem;
+    font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    position: relative; transition: color 0.3s;
+  }
+  nav ul li a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1.5px; background: var(--warm);
+    transition: width 0.3s;
+  }
+  nav ul li a:hover, nav ul li a.active { color: var(--warm); }
+  nav ul li a:hover::after, nav ul li a.active::after { width: 100%; }
+  .cart-btn {
+    background: var(--warm); color: #fff; border: none;
+    padding: 8px 22px; border-radius: 30px; font-family: 'Jost', sans-serif;
+    font-size: 0.85rem; cursor: pointer; transition: background 0.3s;
+    letter-spacing: 0.05em;
+  }
+  .cart-btn:hover { background: var(--deep); }
+
+  /* ── PAGES ── */
+  .page { display: none; padding-top: 70px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ── HERO SLIDER ── */
+  .hero {
+    position: relative; height: calc(100vh - 70px);
+    overflow: hidden; background: var(--deep);
+  }
+  .slides-wrapper {
+    display: flex; height: 100%;
+    width: 400%;
+    transition: transform 0.8s cubic-bezier(0.77, 0, 0.18, 1);
+  }
+  .slide {
+    width: 25%; height: 100%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+
+  /* ── PREV / NEXT BUTTONS ── */
+  .slider-btn {
+    position: absolute; top: 50%; z-index: 20;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.4);
+    color: #fff; width: 54px; height: 54px;
+    border-radius: 50%; font-size: 1.3rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(6px);
+    transition: all 0.3s;
+  }
+  .slider-btn:hover {
+    background: var(--warm);
+    border-color: var(--warm);
+    transform: translateY(-50%) scale(1.1);
+  }
+  .slider-btn.prev { left: 25px; }
+  .slider-btn.next { right: 25px; }
+  .slide-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    transform: scale(1.05);
+    transition: transform 6s ease;
+  }
+  .slide:nth-child(1) .slide-bg { background: linear-gradient(135deg, #3d2c2c 0%, #7a4f3a 50%, #c47a5a 100%); }
+  .slide:nth-child(2) .slide-bg { background: linear-gradient(135deg, #2c3d35 0%, #4a7a5a 50%, #8aab8e 100%); }
+  .slide:nth-child(3) .slide-bg { background: linear-gradient(135deg, #3d3020 0%, #8a6a30 50%, #d4a84b 100%); }
+  .slide:nth-child(4) .slide-bg { background: linear-gradient(135deg, #3a2c3d 0%, #7a5a8a 50%, #b08ab8 100%); }
+
+  /* Cradle SVG art on slides */
+  .slide-art {
+    position: absolute; bottom: 0; right: 5%;
+    width: 45%; opacity: 0.18;
+  }
+  .slide-content {
+    position: relative; z-index: 2; text-align: center; color: #fff;
+    padding: 0 40px;
+  }
+  .slide-content .tag {
+    font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+    background: rgba(255,255,255,0.15); display: inline-block;
+    padding: 5px 18px; border-radius: 30px; margin-bottom: 20px;
+  }
+  .slide-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.15; margin-bottom: 20px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .slide-content p {
+    font-size: 1.05rem; opacity: 0.85; margin-bottom: 35px;
+    max-width: 480px; line-height: 1.7;
+  }
+  .btn-primary {
+    background: var(--blush); color: var(--deep);
+    padding: 14px 36px; border-radius: 40px; text-decoration: none;
+    font-weight: 600; font-size: 0.9rem; letter-spacing: 0.08em;
+    text-transform: uppercase; display: inline-block;
+    transition: all 0.3s; border: 2px solid transparent;
+  }
+  .btn-primary:hover {
+    background: transparent; border-color: var(--blush); color: var(--blush);
+  }
+  .btn-outline {
+    border: 2px solid var(--warm); color: var(--warm);
+    padding: 12px 32px; border-radius: 40px; text-decoration: none;
+    font-weight: 500; font-size: 0.9rem; letter-spacing: 0.08em;
+    text-transform: uppercase; display: inline-block;
+    transition: all 0.3s; background: transparent;
+    cursor: pointer; font-family: 'Jost', sans-serif;
+  }
+  .btn-outline:hover { background: var(--warm); color: #fff; }
+
+  /* Slide dots */
+  .slide-dots {
+    position: absolute; bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 10;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    transition: all 0.3s; cursor: pointer;
+  }
+  .dot.active { background: #fff; width: 24px; border-radius: 4px; }
+
+  /* ── POPUP OFFER ── */
+  .popup-overlay {
+    position: fixed; inset: 0; background: rgba(61,44,44,0.6);
+    z-index: 9000; display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .popup-overlay.show { display: flex; }
+  .popup-box {
+    background: var(--cream); border-radius: 20px;
+    max-width: 480px; width: 90%; padding: 50px 40px;
+    text-align: center; position: relative;
+    border: 2px solid var(--blush);
+    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7) translateY(30px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .popup-close {
+    position: absolute; top: 15px; right: 20px;
+    font-size: 1.5rem; cursor: pointer; color: var(--warm);
+    background: none; border: none; font-family: inherit;
+    line-height: 1;
+  }
+  .popup-badge {
+    background: var(--warm); color: #fff; display: inline-block;
+    padding: 6px 18px; border-radius: 30px; font-size: 0.8rem;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .popup-box h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; margin-bottom: 10px; color: var(--deep);
+  }
+  .popup-box .discount {
+    font-size: 3.5rem; font-weight: 700; color: var(--warm);
+    font-family: 'Playfair Display', serif; line-height: 1;
+    margin: 10px 0;
+  }
+  .popup-box p { color: #666; font-size: 0.95rem; margin-bottom: 25px; }
+  .popup-code {
+    background: var(--soft); padding: 12px 24px; border-radius: 10px;
+    font-weight: 700; letter-spacing: 0.15em; font-size: 1.1rem;
+    color: var(--warm); margin-bottom: 25px; display: inline-block;
+    border: 2px dashed var(--blush);
+  }
+
+  /* ── FLOATING OFFER BANNER ── */
+  .offer-banner {
+    position: fixed; bottom: 30px; right: 30px; z-index: 800;
+    background: var(--warm); color: #fff; border-radius: 15px;
+    padding: 18px 24px; max-width: 260px;
+    box-shadow: 0 10px 40px rgba(196,122,90,0.4);
+    animation: floatBounce 3s ease-in-out infinite;
+    cursor: pointer; display: none;
+  }
+  .offer-banner.show { display: block; }
+  @keyframes floatBounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .offer-banner strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
+  .offer-banner span { font-size: 0.82rem; opacity: 0.9; }
+  .offer-banner .close-banner {
+    position: absolute; top: 8px; right: 12px;
+    font-size: 1rem; cursor: pointer; opacity: 0.7; background: none; border: none; color: #fff;
+  }
+
+  /* ── FEATURES STRIP ── */
+  .features-strip {
+    background: var(--deep); color: #fff;
+    display: flex; justify-content: center; gap: 60px;
+    padding: 30px 60px; flex-wrap: wrap;
+  }
+  .feature-item { display: flex; align-items: center; gap: 12px; }
+  .feature-item .icon { font-size: 1.5rem; }
+  .feature-item div strong { display: block; font-size: 0.95rem; }
+  .feature-item div span { font-size: 0.78rem; opacity: 0.65; letter-spacing: 0.05em; }
+
+  /* ── SECTION COMMON ── */
+  .section { padding: 90px 60px; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-header .eyebrow {
+    font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--warm); margin-bottom: 12px; display: block;
+  }
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem); color: var(--deep);
+  }
+  .section-header p {
+    color: #888; max-width: 520px; margin: 15px auto 0;
+    font-size: 1rem; line-height: 1.7;
+  }
+
+  /* ── PRODUCTS ── */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px; max-width: 1100px; margin: 0 auto;
+  }
+  .product-card {
+    background: #fff; border-radius: 20px;
+    overflow: hidden; transition: transform 0.35s, box-shadow 0.35s;
+    position: relative;
+  }
+  .product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 60px rgba(61,44,44,0.15);
+  }
+  .product-img {
+    height: 280px; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .p1-bg { background: linear-gradient(145deg, #f7e8d8, #e8c4a8); }
+  .p2-bg { background: linear-gradient(145deg, #deeade, #b8d4bc); }
+  .p3-bg { background: linear-gradient(145deg, #f0e8f7, #d4b8e8); }
+
+  /* SVG Cradle Illustrations */
+  .cradle-svg { width: 70%; max-width: 220px; }
+
+  .product-badge {
+    position: absolute; top: 16px; left: 16px;
+    background: var(--warm); color: #fff;
+    font-size: 0.72rem; padding: 5px 12px; border-radius: 30px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .product-body { padding: 25px; }
+  .product-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; margin-bottom: 8px;
+  }
+  .product-body .desc { color: #888; font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
+  .product-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .price { font-size: 1.4rem; font-weight: 700; color: var(--warm); }
+  .price-old {
+    font-size: 0.9rem; color: #bbb; text-decoration: line-through; margin-left: 8px;
+  }
+  .add-cart {
+    background: var(--deep); color: #fff; border: none;
+    padding: 10px 22px; border-radius: 30px; cursor: pointer;
+    font-family: 'Jost', sans-serif; font-size: 0.85rem; font-weight: 500;
+    transition: background 0.3s;
+  }
+  .add-cart:hover { background: var(--warm); }
+  .product-card.is-clickable { cursor: pointer; }
+
+  /* Product image lightbox */
+  .product-image-lightbox {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(61,44,44,0.72);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .product-image-lightbox.show { display: flex; }
+  .product-image-box {
+    position: relative;
+    width: min(92vw, 620px);
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .product-image-box .product-img {
+    height: min(65vh, 460px);
+    border-radius: 16px;
+  }
+  .product-image-close {
+    position: absolute; top: 10px; right: 12px;
+    width: 34px; height: 34px; border: none; border-radius: 50%;
+    background: var(--deep); color: #fff; cursor: pointer;
+    font-size: 1rem; line-height: 1;
+  }
+
+  /* ── HOMEPAGE OFFER SECTION ── */
+  .offer-section {
+    background: var(--deep); color: #fff;
+    padding: 80px 60px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 80px; flex-wrap: wrap;
+  }
+  .offer-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 15px;
+  }
+  .offer-text p { opacity: 0.75; max-width: 400px; line-height: 1.7; }
+  .offer-card {
+    background: var(--warm); border-radius: 20px;
+    padding: 40px; text-align: center; min-width: 220px;
+    animation: floatBounce 4s ease-in-out infinite;
+  }
+  .offer-card .big-disc {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem; font-weight: 700; line-height: 1;
+    color: #fff;
+  }
+  .offer-card p { color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 0.9rem; }
+  .offer-card .code-box {
+    margin-top: 20px; background: rgba(0,0,0,0.2);
+    border-radius: 10px; padding: 10px 20px;
+    font-weight: 700; letter-spacing: 0.15em; font-size: 1rem;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--soft); padding: 80px 60px; }
+  .testi-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px; max-width: 900px; margin: 0 auto;
+  }
+  .testi-card {
+    background: #fff; border-radius: 16px; padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+  .stars { color: var(--gold); font-size: 1.1rem; margin-bottom: 12px; }
+  .testi-card p { font-size: 0.95rem; line-height: 1.7; color: #555; font-style: italic; }
+  .testi-author {
+    margin-top: 18px; display: flex; align-items: center; gap: 12px;
+  }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #fff; font-size: 0.9rem;
+  }
+  .a1 { background: var(--warm); }
+  .a2 { background: var(--sage); }
+  .a3 { background: var(--gold); }
+  .testi-author div strong { display: block; font-size: 0.9rem; }
+  .testi-author div span { font-size: 0.78rem; color: #999; }
+
+  /* ── ABOUT PAGE ── */
+  .about-hero {
+    background: linear-gradient(135deg, var(--deep) 0%, #7a4f3a 100%);
+    color: #fff; padding: 100px 60px; text-align: center;
+  }
+  .about-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 20px;
+  }
+  .about-hero p { max-width: 600px; margin: 0 auto; opacity: 0.8; font-size: 1.05rem; line-height: 1.8; }
+
+  .about-values {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px; max-width: 1000px; margin: 60px auto 0;
+  }
+  .value-card {
+    text-align: center; padding: 35px 25px;
+    background: #fff; border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transition: transform 0.3s;
+  }
+  .value-card:hover { transform: translateY(-5px); }
+  .value-icon { font-size: 2.5rem; margin-bottom: 15px; }
+  .value-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; margin-bottom: 10px;
+  }
+  .value-card p { color: #888; font-size: 0.88rem; line-height: 1.7; }
+
+  .about-story {
+    display: flex; align-items: center; gap: 70px;
+    max-width: 1000px; margin: 0 auto; flex-wrap: wrap;
+  }
+  .story-visual {
+    flex: 1; min-width: 280px; height: 380px;
+    background: linear-gradient(145deg, #f2c4b0, #e8a888);
+    border-radius: 30px; display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .story-visual::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 150px; height: 150px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+  .story-text { flex: 1; min-width: 280px; }
+  .story-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; margin-bottom: 20px;
+  }
+  .story-text p { color: #666; line-height: 1.8; margin-bottom: 15px; }
+
+  /* ── OFFERS PAGE ── */
+  .offers-hero {
+    background: linear-gradient(135deg, #3d2c20, #8a5a30);
+    padding: 80px 60px; text-align: center; color: #fff;
+  }
+  .offers-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 15px;
+  }
+  .offers-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px; max-width: 1000px; margin: 0 auto;
+  }
+  .offer-tile {
+    background: #fff; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .offer-tile:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  }
+  .offer-tile-header {
+    padding: 35px; color: #fff; text-align: center;
+  }
+  .ot1 { background: linear-gradient(135deg, #c47a5a, #8a4a30); }
+  .ot2 { background: linear-gradient(135deg, #8aab8e, #4a7a5a); }
+  .ot3 { background: linear-gradient(135deg, #d4a84b, #9a6a15); }
+  .ot4 { background: linear-gradient(135deg, #8a6aab, #5a3a80); }
+  .offer-tile-header .pct {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem; font-weight: 700; line-height: 1;
+  }
+  .offer-tile-header p { opacity: 0.85; margin-top: 5px; font-size: 0.9rem; }
+  .offer-tile-body { padding: 25px; }
+  .offer-tile-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; margin-bottom: 10px;
+  }
+  .offer-tile-body p { color: #888; font-size: 0.87rem; line-height: 1.6; margin-bottom: 18px; }
+  .code-pill {
+    display: inline-block; background: var(--soft);
+    border: 2px dashed var(--blush); border-radius: 8px;
+    padding: 8px 18px; font-weight: 700; letter-spacing: 0.12em;
+    color: var(--warm); font-size: 0.9rem; margin-bottom: 15px;
+  }
+  .timer-label { font-size: 0.78rem; color: #aaa; margin-top: 5px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep); color: rgba(255,255,255,0.7);
+    padding: 60px 60px 30px;
+  }
+  .footer-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr;
+    gap: 50px; margin-bottom: 50px; flex-wrap: wrap;
+  }
+  .footer-brand .logo { color: #fff; font-size: 1.4rem; }
+  .footer-brand p { margin-top: 15px; font-size: 0.87rem; line-height: 1.7; max-width: 280px; }
+  footer h4 { color: #fff; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; }
+  footer ul { list-style: none; }
+  footer ul li { margin-bottom: 10px; }
+  footer ul li a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.87rem; transition: color 0.3s; }
+  footer ul li a:hover { color: var(--blush); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 25px; text-align: center; font-size: 0.8rem;
+  }
+
+  /* ── PRODUCTS PAGE HEADER ── */
+  .page-hero {
+    background: linear-gradient(135deg, var(--soft), var(--cream));
+    padding: 80px 60px; text-align: center;
+    border-bottom: 1px solid rgba(196,122,90,0.12);
+  }
+  .page-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3rem);
+  }
+  .page-hero p { color: #888; margin-top: 12px; font-size: 1rem; }
+
+  /* ── WHATSAPP FLOATING BUTTON ── */
+  .whatsapp-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    background: #25D366;
+    color: #fff;
+    width: 62px; height: 62px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 25px rgba(37,211,102,0.5);
+    text-decoration: none;
+    transition: all 0.3s;
+    animation: waPulse 2.5s ease-in-out infinite;
+  }
+  .whatsapp-btn:hover {
+    background: #1ebe5d;
+    transform: scale(1.12);
+    box-shadow: 0 10px 35px rgba(37,211,102,0.65);
+  }
+  .whatsapp-btn svg {
+    width: 34px; height: 34px; fill: #fff;
+  }
+  /* Ripple ring around WhatsApp button */
+  .whatsapp-btn::before {
+    content: '';
+    position: absolute;
+    width: 62px; height: 62px;
+    border-radius: 50%;
+    background: rgba(37,211,102,0.4);
+    animation: waRipple 2.5s ease-out infinite;
+  }
+  @keyframes waRipple {
+    0%   { transform: scale(1);   opacity: 0.7; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  @keyframes waPulse {
+    0%,100% { transform: scale(1); }
+    50%     { transform: scale(1.07); }
+  }
+  /* Tooltip on hover */
+  .whatsapp-btn .wa-tooltip {
+    position: absolute;
+    right: 72px;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 0.78rem;
+    font-family: 'Jost', sans-serif;
+    white-space: nowrap;
+    padding: 7px 14px;
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .whatsapp-btn .wa-tooltip::after {
+    content: '';
+    position: absolute;
+    right: -6px; top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-left-color: #1a1a1a;
+    border-right: none;
+  }
+  .whatsapp-btn:hover .wa-tooltip { opacity: 1; }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0; transform: translateY(30px);
+    animation: fadeUp 0.7s ease forwards;
+  }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .delay-1 { animation-delay: 0.15s; }
+  .delay-2 { animation-delay: 0.3s; }
+  .delay-3 { animation-delay: 0.45s; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    nav ul { gap: 20px; }
+    .section { padding: 60px 20px; }
+    .offer-section { padding: 60px 20px; }
+    .footer-top { grid-template-columns: 1fr; gap: 30px; }
+    footer { padding: 40px 20px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <a href="#" class="logo">Jhoola<span>-</span></a>
+  <ul>
+    <li><a href="#" onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+    <li><a href="#" onclick="showPage('products')" id="nav-products">Products</a></li>
+    <li><a href="#" onclick="showPage('about')" id="nav-about">About</a></li>
+    <li><a href="#" onclick="showPage('offers')" id="nav-offers">Offers</a></li>
+  </ul>
+  <button class="cart-btn" onclick="alert('Cart: Your selected items will appear here!')">🛒 Cart (0)</button>
+</nav>
+
+<!-- ────────────────────────── HOME PAGE ────────────────────────── -->
+<div class="page active" id="page-home">
+
+  <!-- Hero Slider -->
+  <section class="hero">
+    <div class="slides-wrapper">
+
+      <!-- Slide 1 -->
+      <div class="slide">
+        <div class="slide-bg"></div>
+        <svg class="slide-art" viewBox="0 0 300 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="150" cy="190" rx="110" ry="18" fill="white" opacity="0.5"/>
+          <path d="M60 140 Q150 80 240 140 L230 200 Q150 230 70 200 Z" fill="white" opacity="0.7"/>
+          <rect x="130" y="50" width="8" height="100" rx="4" fill="white" opacity="0.6"/>
+          <ellipse cx="134" cy="45" rx="25" ry="8" fill="white" opacity="0.5"/>
+        </svg>
+        <div class="slide-content">
+          <span class="tag">✨ New Collection 2025</span>
+          <h1>Where Dreams<br><em>Begin Softly</em></h1>
+          <p>Handcrafted cradles designed to cradle your baby's sweetest moments in warmth and safety.</p>
+          <a href="#" onclick="showPage('products')" class="btn-primary">Shop Now</a>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <div class="slide-bg"></div>
+        <svg class="slide-art" viewBox="0 0 300 250" fill="none">
+          <ellipse cx="150" cy="195" rx="120" ry="20" fill="white" opacity="0.4"/>
+          <path d="M50 145 Q150 70 250 145 L240 205 Q150 240 60 205 Z" fill="white" opacity="0.6"/>
+          <path d="M90 145 Q150 110 210 145" stroke="white" stroke-width="3" opacity="0.4" fill="none"/>
+          <rect x="135" y="40" width="6" height="115" rx="3" fill="white" opacity="0.5"/>
+        </svg>
+        <div class="slide-content">
+          <span class="tag">🌿 Eco Friendly</span>
+          <h1>Naturally Safe,<br><em>Endlessly Cozy</em></h1>
+          <p>Our cradles are crafted from sustainably sourced wood — gentle on baby, kind to earth.</p>
+          <a href="#" onclick="showPage('products')" class="btn-primary">Explore Range</a>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide">
+        <div class="slide-bg"></div>
+        <svg class="slide-art" viewBox="0 0 300 250" fill="none">
+          <ellipse cx="150" cy="200" rx="115" ry="16" fill="white" opacity="0.45"/>
+          <path d="M55 150 Q150 90 245 150 L235 205 Q150 235 65 205 Z" fill="white" opacity="0.65"/>
+          <circle cx="150" cy="100" r="30" fill="white" opacity="0.2"/>
+          <rect x="133" y="45" width="7" height="115" rx="3.5" fill="white" opacity="0.5"/>
+        </svg>
+        <div class="slide-content">
+          <span class="tag">🎉 Limited Offer</span>
+          <h1>Luxury Comfort<br><em>at Baby Prices</em></h1>
+          <p>Premium finishes, whisper-quiet rocking, and timeless design — now up to 30% off!</p>
+          <a href="#" onclick="showPage('offers')" class="btn-primary">View Offers</a>
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="slide">
+        <div class="slide-bg"></div>
+        <svg class="slide-art" viewBox="0 0 300 250" fill="none">
+          <ellipse cx="150" cy="195" rx="105" ry="17" fill="white" opacity="0.45"/>
+          <path d="M65 148 Q150 85 235 148 L225 202 Q150 232 75 202 Z" fill="white" opacity="0.65"/>
+          <path d="M100 148 L100 202 M200 148 L200 202" stroke="white" stroke-width="3" opacity="0.3"/>
+          <rect x="132" y="42" width="7" height="115" rx="3.5" fill="white" opacity="0.5"/>
+        </svg>
+        <div class="slide-content">
+          <span class="tag">🏠 Free Delivery</span>
+          <h1>Delivered with<br><em>Love & Care</em></h1>
+          <p>Free delivery on all orders above ₹1,999. We set it up, you enjoy.</p>
+          <a href="#" onclick="showPage('products')" class="btn-primary">Order Today</a>
+        </div>
+      </div>
+
+    </div>
+    <!-- Prev / Next Buttons -->
+    <button class="slider-btn prev" onclick="changeSlide(-1)" title="Previous">&#8592;</button>
+    <button class="slider-btn next" onclick="changeSlide(1)"  title="Next">&#8594;</button>
+
+    <div class="slide-dots">
+      <div class="dot active" id="dot-0" onclick="goToSlide(0)"></div>
+      <div class="dot" id="dot-1" onclick="goToSlide(1)"></div>
+      <div class="dot" id="dot-2" onclick="goToSlide(2)"></div>
+      <div class="dot" id="dot-3" onclick="goToSlide(3)"></div>
+    </div>
+  </section>
+
+  <!-- Features Strip -->
+  <div class="features-strip">
+    <div class="feature-item">
+      <span class="icon">🚚</span>
+      <div><strong>Free Delivery</strong><span>Orders above ₹1,999</span></div>
+    </div>
+    <div class="feature-item">
+      <span class="icon">🛡️</span>
+      <div><strong>Safety Certified</strong><span>BIS & EU approved</span></div>
+    </div>
+    <div class="feature-item">
+      <span class="icon">🌿</span>
+      <div><strong>Eco Materials</strong><span>EDO friendly materials</span></div>
+    </div>
+    <div class="feature-item">
+      <span class="icon">🔄</span>
+      <div><strong>5-Day Returns</strong><span>Extra charges for return</span></div>
+    </div>
+  </div>
+
+  <!-- Featured Products Section -->
+  <section class="section">
+    <div class="section-header">
+      <span class="eyebrow">Our Collection</span>
+      <h2>Cradle for Little Dreamers</h2>
+      <p>Every cradle tells a story of safety, warmth, and timeless beauty — built for your most precious moments.</p>
+    </div>
+    <div class="products-grid">
+      <!-- Product 1 -->
+      <div class="product-card fade-in is-clickable" data-product="wall-mounted-classic-cradle">
+        <div class="product-img p1-bg">
+          <span class="product-badge">Bestseller</span>
+          <svg class="cradle-svg" viewBox="0 0 220 180" fill="none">
+            <ellipse cx="110" cy="155" rx="80" ry="12" fill="#c47a5a" opacity="0.25"/>
+            <path d="M40 100 Q110 55 180 100 L172 148 Q110 172 48 148 Z" fill="#c47a5a" opacity="0.8"/>
+            <path d="M65 100 Q110 78 155 100" stroke="#7a3a1a" stroke-width="2" fill="none" opacity="0.5"/>
+            <rect x="104" y="30" width="6" height="78" rx="3" fill="#8a4a20"/>
+            <ellipse cx="107" cy="26" rx="22" ry="7" fill="#c47a5a" opacity="0.6"/>
+            <path d="M40 148 L40 168 M180 148 L180 168" stroke="#8a4a20" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="110" cy="168" rx="75" ry="6" fill="#c47a5a" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <h3>Wall Mounted Classic Cradle</h3>
+          <p class="desc">Solid 2.5 feet steel powder coated frame. Gentle rocking motion & look for peaceful sleep.</p>
+          <div class="product-footer">
+            <div><span class="price">₹1,999</span><span class="price-old">₹2,500</span></div>
+            <button class="add-cart" onclick="addToCart('Wall Mounted Classic Cradle')">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card fade-in delay-1">
+        <div class="product-img p2-bg">
+          <span class="product-badge" style="background:var(--sage)">Eco Pick(OUT-OF STOCK)</span>
+          <svg class="cradle-svg" viewBox="0 0 220 180" fill="none">
+            <ellipse cx="110" cy="155" rx="85" ry="11" fill="#4a7a5a" opacity="0.2"/>
+            <path d="M35 105 Q110 50 185 105 L177 150 Q110 175 43 150 Z" fill="#8aab8e" opacity="0.85"/>
+            <line x1="55" y1="105" x2="55" y2="150" stroke="#4a7a5a" stroke-width="3"/>
+            <line x1="165" y1="105" x2="165" y2="150" stroke="#4a7a5a" stroke-width="3"/>
+            <rect x="104" y="28" width="6" height="82" rx="3" fill="#4a7a5a"/>
+            <path d="M85 28 Q107 10 130 28" stroke="#4a7a5a" stroke-width="3" fill="none"/>
+            <ellipse cx="110" cy="155" rx="78" ry="8" fill="#4a7a5a" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <h3>Window Hanger Cradle</h3>
+          <p class="desc">Sustainable bamboo construction. Adjustable height, breathable mesh sides for air circulation.</p>
+          <div class="product-footer">
+            <div><span class="price">₹2,499</span><span class="price-old">₹3,000</span></div>
+            <button class="add-cart" onclick="addToCart('Window Hanger Cradle')">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card fade-in delay-2">
+        <div class="product-img p3-bg">
+          <span class="product-badge" style="background:var(--gold);color:var(--deep)">Premium</span>
+          <svg class="cradle-svg" viewBox="0 0 220 180" fill="none">
+            <ellipse cx="110" cy="157" rx="82" ry="11" fill="#8a5aab" opacity="0.2"/>
+            <path d="M38 108 Q110 58 182 108 L174 152 Q110 177 46 152 Z" fill="#b088cc" opacity="0.8"/>
+            <path d="M60 108 Q110 85 160 108" stroke="#6a3a8a" stroke-width="2" fill="none" opacity="0.5"/>
+            <path d="M80 108 Q110 92 140 108" stroke="#6a3a8a" stroke-width="1.5" fill="none" opacity="0.3"/>
+            <rect x="104" y="30" width="6" height="85" rx="3" fill="#6a3a8a"/>
+            <circle cx="107" cy="25" r="14" fill="#b088cc" opacity="0.7"/>
+            <circle cx="107" cy="25" r="7" fill="#fff" opacity="0.5"/>
+            <path d="M38 152 L28 172 M182 152 L192 172" stroke="#6a3a8a" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="110" cy="170" rx="76" ry="6" fill="#8a5aab" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <h3>Cradle Combo Set</h3>
+          <p class="desc">Our finest piece — premium ash wood, velvet-lined interior, built-in music & nightlight.</p>
+          <div class="product-footer">
+            <div><span class="price">₹2,499</span><span class="price-old">₹3,000</span></div>
+            <button class="add-cart" onclick="addToCart('Cradle Combo Set')">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Offers Highlight -->
+  <div class="offer-section">
+    <div class="offer-text">
+      <h2>Special<br>Introductory<br>Offers 🎉</h2>
+      <p>We're celebrating our launch with exclusive deals. Don't miss out — limited time only!</p>
+      <br>
+      <a href="#" onclick="showPage('offers')" class="btn-outline">See All Offers</a>
+    </div>
+    <div class="offer-card">
+      <div class="big-disc">30%</div>
+      <p>OFF on your first order</p>
+      <div class="code-box">MYFIRST30</div>
+    </div>
+    <div class="offer-card" style="background: var(--sage); animation-delay: 0.5s;">
+      <div class="big-disc">FREE</div>
+      <p>Delivery on orders ₹2499K+</p>
+      <div class="code-box">COMBFREE</div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="section-header">
+      <span class="eyebrow">Happy Parents</span>
+      <h2>Stories of Sweet Sleep</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"The Aurora Classic Cradle is absolutely gorgeous. Our baby falls asleep within minutes of being placed in it. Worth every rupee!"</p>
+        <div class="testi-author">
+          <div class="avatar a1">P</div>
+          <div><strong>Priya Sharma</strong><span>Mumbai, MH</span></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"We chose the eco bamboo bassinet and couldn't be happier. Delivery was quick and the assembly was simple. Beautiful design too!"</p>
+        <div class="testi-author">
+          <div class="avatar a2">R</div>
+          <div><strong>Rahul Mehta</strong><span>Bangalore, KA</span></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"Violet Royale is a showstopper. The built-in music lulls our daughter to sleep instantly. The velvet lining is so soft and luxurious."</p>
+        <div class="testi-author">
+          <div class="avatar a3">A</div>
+          <div><strong>Anjali Patel</strong><span>Pune, MH</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<!-- END HOME -->
+
+<!-- ────────────────────────── PRODUCTS PAGE ────────────────────────── -->
+<div class="page" id="page-products">
+  <div class="page-hero">
+    <span class="eyebrow">Our Full Collection</span>
+    <h1>Baby Cradles & Net</h1>
+    <p>Every product is built with love, safety certifications, and timeless design</p>
+  </div>
+  <section class="section">
+    <div class="products-grid">
+      <div class="product-card" data-product="wall-mounted-classic-cradle">
+        <div class="product-img p1-bg">
+          <span class="product-badge">Bestseller</span>
+          <svg class="cradle-svg" viewBox="0 0 220 180" fill="none">
+            <ellipse cx="110" cy="155" rx="80" ry="12" fill="#c47a5a" opacity="0.25"/>
+            <path d="M40 100 Q110 55 180 100 L172 148 Q110 172 48 148 Z" fill="#c47a5a" opacity="0.8"/>
+            <path d="M65 100 Q110 78 155 100" stroke="#7a3a1a" stroke-width="2" fill="none" opacity="0.5"/>
+            <rect x="104" y="30" width="6" height="78" rx="3" fill="#8a4a20"/>
+            <ellipse cx="107" cy="26" rx="22" ry="7" fill="#c47a5a" opacity="0.6"/>
+            <path d="M40 148 L40 168 M180 148 L180 168" stroke="#8a4a20" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="110" cy="168" rx="75" ry="6" fill="#c47a5a" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <h3>Wall Mounted Classic Cradle</h3>
+          <p class="desc">Solid 2.5 feet steel powder coated frame. Gentle rocking motion & look for peaceful sleep. Smooth, gentle rocking motion. Can includes bedding set, mosquito net safety. Suitable for 0–15 months.</p>
+          <div class="product-footer">
+            <div><span class="price">₹1,999</span><span class="price-old">₹2,500</span></div>
+            <button class="add-cart" onclick="addToCart('Wall Mounted Classic Cradle')">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img p2-bg">
+          <span class="product-badge" style="background:var(--sage)">Eco Pick(OUT-OF STOCK)</span>
+          <svg class="cradle-svg" viewBox="0 0 220 180" fill="none">
+            <ellipse cx="110" cy="155" rx="85" ry="11" fill="#4a7a5a" opacity="0.2"/>
+            <path d="M35 105 Q110 50 185 105 L177 150 Q110 175 43 150 Z" fill="#8aab8e" opacity="0.85"/>
+            <line x1="55" y1="105" x2="55" y2="150" stroke="#4a7a5a" stroke-width="3"/>
+            <line x1="165" y1="105" x2="165" y2="150" stroke="#4a7a5a" stroke-width="3"/>
+            <rect x="104" y="28" width="6" height="82" rx="3" fill="#4a7a5a"/>
+            <path d="M85 28 Q107 10 130 28" stroke="#4a7a5a" stroke-width="3" fill="none"/>
+            <ellipse cx="110" cy="155" rx="78" ry="8" fill="#4a7a5a" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <h3>Window Hanger Cradle</h3>
+          <p class="desc">Sustainable bamboo construction with adjustable height (3 positions). Breathable mesh sides for airflow. Waterproof mattress cover included. Perfect for 0–6 months.</p>
+          <div class="product-footer">
+            <div><span class="price">₹2,499</span><span class="price-old">₹3,000</span></div>
+            <button class="add-cart" onclick="addToCart('Window Hanger Cradle')">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img p3-bg">
+          <span class="product-badge" style="background:var(--gold);color:var(--deep)">Premium</span>
+          <svg class="cradle-svg" viewBox="0 0 220 180" fill="none">
+            <ellipse cx="110" cy="157" rx="82" ry="11" fill="#8a5aab" opacity="0.2"/>
+            <path d="M38 108 Q110 58 182 108 L174 152 Q110 177 46 152 Z" fill="#b088cc" opacity="0.8"/>
+            <path d="M60 108 Q110 85 160 108" stroke="#6a3a8a" stroke-width="2" fill="none" opacity="0.5"/>
+            <rect x="104" y="30" width="6" height="85" rx="3" fill="#6a3a8a"/>
+            <circle cx="107" cy="25" r="14" fill="#b088cc" opacity="0.7"/>
+            <path d="M38 152 L28 172 M182 152 L192 172" stroke="#6a3a8a" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="110" cy="170" rx="76" ry="6" fill="#8a5aab" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="product-body">
+          <h3>Cradle Combo Set</h3>
+          <p class="desc">Premium ash wood with hand-carved details. Velvet-lined interior, built-in lullaby music player, dimmable nightlight, and 3-speed rocking motor. Our ultimate luxury cradle.</p>
+          <div class="product-footer">
+            <div><span class="price">₹2,499</span><span class="price-old">₹3,000</span></div>
+            <button class="add-cart" onclick="addToCart('Cradle Combo Set')">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ────────────────────────── ABOUT PAGE ────────────────────────── -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <span class="eyebrow" style="color:var(--blush)">Our Story</span>
+    <h1>Crafting Dreams,<br>One Cradle at a Time</h1>
+    <p>Jhoola was born from a parent's desire to give babies the most peaceful, safe, and beautiful start to life.</p>
+  </div>
+
+  <section class="section">
+    <div class="about-story">
+      <div class="story-visual">
+        <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
+          <ellipse cx="100" cy="165" rx="70" ry="10" fill="white" opacity="0.3"/>
+          <path d="M35 110 Q100 60 165 110 L158 155 Q100 178 42 155 Z" fill="white" opacity="0.7"/>
+          <rect x="95" y="40" width="6" height="78" rx="3" fill="white" opacity="0.6"/>
+          <ellipse cx="98" cy="36" rx="20" ry="6" fill="white" opacity="0.5"/>
+          <path d="M35 155 L25 175 M165 155 L175 175" stroke="white" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+          <ellipse cx="100" cy="174" rx="65" ry="5" fill="white" opacity="0.25"/>
+          <!-- Stars -->
+          <text x="60" y="30" fill="white" opacity="0.6" font-size="14">⭐</text>
+          <text x="145" y="50" fill="white" opacity="0.5" font-size="10">✨</text>
+          <text x="40" y="70" fill="white" opacity="0.4" font-size="8">✨</text>
+        </svg>
+      </div>
+      <div class="story-text">
+        <span class="eyebrow">Newly Founded in 2026</span>
+        <h2>A Business Built on Love</h2>
+        <p>Jhoola started in a small house in Pune, Maharashtra. Our founder, a new parent herself, couldn't find a cradle that was both beautiful and truly safe — so she built one.</p>
+        <p>Today, we craft 2 signature cradle designs, each made by skilled artisans using FSC-certified sustainable steel and certified-safe fabrics. Every cradle is tested to BIS IS 15846 and European EN 716 safety standards.</p>
+        <p>We've helped over 100+ families across India give their babies the gift of peaceful, safe sleep.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background: var(--soft); padding-top: 10px;">
+    <div class="section-header">
+      <span class="eyebrow">Why Parents Trust Us</span>
+      <h2>Our Core Values</h2>
+    </div>
+    <div class="about-values">
+      <div class="value-card">
+        <div class="value-icon">🛡️</div>
+        <h3>Safety First</h3>
+        <p>All products meet BIS & EU safety standards. No sharp edges, non-toxic finishes, and weight-tested frames.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🌿</div>
+        <h3>Eco Conscious</h3>
+        <p>FSC-certified wood, water-based paints, and recyclable packaging. Good for your baby and the planet.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3>Artisan Crafted</h3>
+        <p>Each cradle is handmade by skilled craftspeople, not machines. You're buying a piece of art.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">💌</div>
+        <h3>Parent First</h3>
+        <p>Our support team is staffed by parents. We get it. We're here 7 days a week for any question.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ────────────────────────── OFFERS PAGE ────────────────────────── -->
+<div class="page" id="page-offers">
+  <div class="offers-hero">
+    <span class="eyebrow" style="color:var(--blush)">🎉 Limited Time</span>
+    <h1>Exclusive Offers<br>for New Parents</h1>
+    <p style="opacity:0.75; max-width:500px; margin:15px auto; font-size:1rem; line-height:1.7;">
+      Stock up on love — our best deals of the year, crafted just for you. Apply codes at checkout.
+    </p>
+  </div>
+
+  <section class="section">
+    <div class="offers-grid">
+      <div class="offer-tile">
+        <div class="offer-tile-header ot1">
+          <div class="pct">30%</div>
+          <p>OFF your first order</p>
+        </div>
+        <div class="offer-tile-body">
+          <h3>Welcome Offer</h3>
+          <p>Brand new to JHOOLA? Get 30% off any cradle on your very first purchase. No minimum order value.</p>
+          <div class="code-pill">FIRST30</div><br>
+          <button class="btn-outline" onclick="copyCode('FIRST30')">Copy Code</button>
+          <p class="timer-label">⏱ Valid till 31 March 2027</p>
+        </div>
+      </div>
+
+      <div class="offer-tile">
+        <div class="offer-tile-header ot2">
+          <div class="pct">FREE</div>
+          <p>Delivery on above ₹2,499</p>
+        </div>
+        <div class="offer-tile-body">
+          <h3>Free Shipping</h3>
+          <p>Get free white-glove delivery! Get at door-step! on all orders above ₹2,499.</p>
+          <div class="code-pill">COMBFREE</div><br>
+          <button class="btn-outline" onclick="copyCode('COMBFREE')">Copy Code</button>
+          <p class="timer-label">⏱ Always applicable</p>
+        </div>
+      </div>
+
+      <div class="offer-tile">
+        <div class="offer-tile-header ot3">
+          <div class="pct">20%</div>
+          <p>OFF premium range</p>
+        </div>
+        <div class="offer-tile-body">
+          <h3>Luxury Deal</h3>
+          <p>Get 10% off the Cradle Combo Set— our most premium selling product offering, now at an unmissable price.</p>
+          <div class="code-pill">ROYALE20</div><br>
+          <button class="btn-outline" onclick="copyCode('ROYALE20')">Copy Code</button>
+          <p class="timer-label">⏱ Valid till 31 Dec 2026</p>
+        </div>
+      </div>
+
+      <div class="offer-tile">
+        <div class="offer-tile-header ot4">
+          <div class="pct">₹50</div>
+          <p>Cashback on referral</p>
+        </div>
+        <div class="offer-tile-body">
+          <h3>Refer a Friend</h3>
+          <p>Share the love! Refer a friend and get ₹50 cashback when they place their first order. TC APPLY</p>
+          <div class="code-pill">REFER50</div><br>
+          <button class="btn-outline" onclick="copyCode('REFER50')">Copy Code</button>
+          <p class="timer-label">⏱ Limited-Time offer</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ────────────────────────── FOOTER ────────────────────────── -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="logo" onclick="showPage('home')">Jhoola<span style="color:var(--blush); font-style:italic">-</span></a>
+      <p>Baby cradles made with love, certified for safety, and designed to last a lifetime of memories.</p>
+    </div>
+    <div>
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="#" onclick="showPage('home')">Home</a></li>
+        <li><a href="#" onclick="showPage('products')">Products</a></li>
+        <li><a href="#" onclick="showPage('about')">About Us</a></li>
+        <li><a href="#" onclick="showPage('offers')">Offers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="/cdn-cgi/l/email-protection#274f424b4b48674b524b4b46455e49425453094e49"><span class="__cf_email__" data-cfemail="1078757c7c7f507c657c7c7172697e7563643e797e">[email&#160;protected]</span></a></li>
+        <li><a href="tel:+91940356586*">+91 940356586*</a></li>
+        <li><a href="#">Pune, Maharashtra</a></li>
+        <li><a href="https://wa.me/919403565862" target="_blank">WhatsApp Support</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Jhoola-Vaibhav-Vaidya. Built with Us. All rights reserved. Made with ❤️ in India.</p>
+  </div>
+</footer>
+
+<!-- ────────── WHATSAPP FLOATING BUTTON ────────── -->
+<a class="whatsapp-btn"
+   href="https://wa.me/919403565862?text=Hi%20Jhoola!%20I%20am%20interested%20in%20your%20baby%20cradles.%20Can%20you%20help%20me%3F"
+   target="_blank"
+   rel="noopener noreferrer"
+   title="Chat & Place Order with us on WhatsApp">
+  <span class="wa-tooltip">💬 Chat & Place Order with us!</span>
+  <!-- Official WhatsApp SVG Logo -->
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.494 2.027 7.805L0 32l8.427-2.007A15.93 15.93 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 0 1-6.771-1.854l-.485-.287-5.003 1.192 1.234-4.865-.317-.499A13.267 13.267 0 0 1 2.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.862c-.398-.199-2.354-1.162-2.719-1.295-.365-.133-.631-.199-.897.199-.266.398-1.03 1.295-1.263 1.561-.232.266-.465.299-.863.1-.398-.199-1.681-.619-3.202-1.977-1.183-1.056-1.982-2.361-2.215-2.759-.232-.398-.025-.614.175-.812.179-.179.398-.465.597-.697.199-.232.266-.398.398-.664.133-.266.067-.498-.033-.697-.1-.199-.897-2.162-1.229-2.96-.324-.777-.653-.672-.897-.684l-.764-.013c-.266 0-.697.1-1.063.498-.365.398-1.395 1.362-1.395 3.324s1.428 3.857 1.627 4.123c.199.266 2.811 4.293 6.813 6.023.952.411 1.695.656 2.274.839.956.304 1.826.261 2.514.158.767-.114 2.354-.962 2.686-1.891.332-.929.332-1.727.232-1.891-.1-.165-.365-.265-.763-.464z"/>
+  </svg>
+</a>
+
+<!-- ────────── POPUP OFFER ────────── -->
+<div class="popup-overlay" id="popup-overlay">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-badge">🎉 Welcome Gift</div>
+    <h2>Hello, New Parent!</h2>
+    <div class="discount">30% OFF</div>
+    <p>On your very first order. Use the code below at checkout and save big on our cradles COMBO!</p>
+    <div class="popup-code">MYFIRST30</div>
+    <button class="btn-primary" style="background: var(--warm); color:#fff; border:none; cursor:pointer; padding:14px 36px; font-size:0.9rem;" onclick="closePopup(); showPage('products')">
+      Shop Now & Save
+    </button>
+  </div>
+</div>
+
+<!-- ────────── FLOATING OFFER BANNER ────────── -->
+<div class="offer-banner" id="offer-banner" onclick="showPage('offers')">
+  <button class="close-banner" onclick="event.stopPropagation(); document.getElementById('offer-banner').classList.remove('show')">✕</button>
+  <strong>🔥 Flash Deal!</strong>
+  <span>Use <b>MYFIRST30</b> for 30% OFF your first cradle combo Set. Limited time!</span>
+</div>
+
+<div class="product-image-lightbox" id="product-image-lightbox" onclick="closeProductImage(event)">
+  <div class="product-image-box">
+    <button class="product-image-close" type="button" onclick="closeProductImage()">X</button>
+    <div id="product-image-content"></div>
+  </div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  let cartCount = 0;
+  const cartBtn = document.querySelector('.cart-btn');
+
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('nav ul li a').forEach(a => a.classList.remove('active'));
+    document.getElementById('nav-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return false;
+  }
+
+  function addToCart(name) {
+    cartCount++;
+    cartBtn.textContent = `🛒 Cart (${cartCount})`;
+    cartBtn.style.background = 'var(--sage)';
+    setTimeout(() => cartBtn.style.background = 'var(--warm)', 800);
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+      background:var(--deep); color:#fff; padding:14px 28px; border-radius:40px;
+      font-size:0.9rem; z-index:9999; box-shadow:0 8px 30px rgba(0,0,0,0.2);
+      animation: fadeUp 0.4s ease;
+    `;
+    toast.textContent = `✓ ${name} added to cart!`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+  }
+
+  function copyCode(code) {
+    navigator.clipboard.writeText(code).catch(() => {});
+    alert(`✅ Code "${code}" copied! Apply it at checkout.`);
+  }
+
+  function closePopup() {
+    document.getElementById('popup-overlay').classList.remove('show');
+  }
+  function openProductImageByKey(productKey) {
+    const targetCard = document.querySelector(`#page-products .product-card[data-product="${productKey}"]`);
+    const imageContent = document.getElementById('product-image-content');
+    const lightbox = document.getElementById('product-image-lightbox');
+    if (!targetCard || !imageContent || !lightbox) return;
+    const productImg = targetCard.querySelector('.product-img');
+    if (!productImg) return;
+    imageContent.innerHTML = '';
+    imageContent.appendChild(productImg.cloneNode(true));
+    lightbox.classList.add('show');
+  }
+
+  function closeProductImage(event) {
+    const lightbox = document.getElementById('product-image-lightbox');
+    if (!lightbox) return;
+    if (event && event.target !== lightbox) return;
+    lightbox.classList.remove('show');
+  }
+
+  function openProductFromHome(productKey) {
+    showPage('products');
+    const targetCard = document.querySelector(`#page-products .product-card[data-product="${productKey}"]`);
+    if (!targetCard) return;
+    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => openProductImageByKey(productKey), 250);
+  }
+
+  document.querySelectorAll('#page-home .product-card[data-product]').forEach((card) => {
+    card.addEventListener('click', (event) => {
+      if (event.target.closest('.add-cart')) return;
+      const productKey = card.dataset.product;
+      if (productKey) openProductFromHome(productKey);
+    });
+  });
+
+  document.querySelectorAll('#page-products .product-card[data-product] .product-img').forEach((img) => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const productKey = img.closest('.product-card')?.dataset.product;
+      if (productKey) openProductImageByKey(productKey);
+    });
+  });
+
+  // Show popup after 2.5s
+  setTimeout(() => {
+    document.getElementById('popup-overlay').classList.add('show');
+  }, 2500);
+
+  // Show floating banner after 6s
+  setTimeout(() => {
+    document.getElementById('offer-banner').classList.add('show');
+  }, 6000);
+
+  // ── SLIDER LOGIC ──
+  let currentSlide = 0;
+  const totalSlides = 4;
+  const slidesWrapper = document.querySelector('.slides-wrapper');
+  const hero = document.querySelector('.hero');
+  let autoPlayTimer = null;
+  let isPaused = false;
+
+  function updateSlider() {
+    slidesWrapper.style.transform = `translateX(-${currentSlide * 25}%)`;
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === currentSlide);
+    });
+  }
+
+  function changeSlide(direction) {
+    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+    updateSlider();
+    resetAutoPlay(); // restart timer after manual click
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateSlider();
+    resetAutoPlay();
+  }
+
+  function startAutoPlay() {
+    autoPlayTimer = setInterval(() => {
+      if (!isPaused) {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        updateSlider();
+      }
+    }, 4000);
+  }
+
+  function resetAutoPlay() {
+    clearInterval(autoPlayTimer);
+    startAutoPlay();
+  }
+
+  // Pause on hover
+  hero.addEventListener('mouseenter', () => { isPaused = true; });
+  hero.addEventListener('mouseleave', () => { isPaused = false; });
+
+  // Start auto-play on load
+  startAutoPlay();
+
+  // Keyboard arrow support
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeProductImage();
+    if (e.key === 'ArrowLeft')  changeSlide(-1);
+    if (e.key === 'ArrowRight') changeSlide(1);
+  });
+
+  // Touch/swipe support for mobile
+  let touchStartX = 0;
+  hero.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  hero.addEventListener('touchend',   (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+  });
+
+</script>
+</body>
+</html>
